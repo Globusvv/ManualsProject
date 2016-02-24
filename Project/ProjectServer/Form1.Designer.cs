@@ -28,34 +28,53 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.button1 = new System.Windows.Forms.Button();
+            this.Logger = new System.Windows.Forms.TextBox();
+            this.ListenTimer = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(12, 12);
+            this.button1.Location = new System.Drawing.Point(0, 0);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(184, 58);
+            this.button1.Size = new System.Drawing.Size(155, 113);
             this.button1.TabIndex = 0;
             this.button1.Text = "button1";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // Logger
+            // 
+            this.Logger.Location = new System.Drawing.Point(0, 308);
+            this.Logger.Multiline = true;
+            this.Logger.Name = "Logger";
+            this.Logger.Size = new System.Drawing.Size(278, 126);
+            this.Logger.TabIndex = 1;
+            // 
+            // ListenTimer
+            // 
+            this.ListenTimer.Interval = 1000;
+            this.ListenTimer.Tick += new System.EventHandler(this.ListenTimer_Tick);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(705, 434);
+            this.ClientSize = new System.Drawing.Size(271, 434);
+            this.Controls.Add(this.Logger);
             this.Controls.Add(this.button1);
             this.Name = "Form1";
             this.Text = "ServerProject";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
         private System.Windows.Forms.Button button1;
+        public System.Windows.Forms.TextBox Logger;
+        public System.Windows.Forms.Timer ListenTimer;
     }
 }
 
