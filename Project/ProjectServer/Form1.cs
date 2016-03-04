@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 
 namespace ProjectServer
 {
@@ -25,12 +26,14 @@ namespace ProjectServer
             InitializeComponent();
              ipHost = Dns.GetHostEntry("localhost");
              ipAddr = ipHost.AddressList[0];
-             ipEndPoint = new IPEndPoint(ipAddr, 11000);
+             ipEndPoint = new IPEndPoint(ipAddr, 10000);
             // Создаем сокет Tcp/Ip
              sListener = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            sListener.Blocking = false;
+            sListener.Blocking = true;
             ListenTimer.Enabled = true;
             ListenTimer.Start();
+                sListener.Bind(ipEndPoint);
+                sListener.Listen(10);
 
         }
 
@@ -40,18 +43,15 @@ namespace ProjectServer
         {
             try
             {
-                
-                sListener.Bind(ipEndPoint);
-                sListener.Listen(10);
 
 
                 Logger.Text += String.Format("Ожидаем соединение через порт {0}", ipEndPoint);
                 Logger.Update();
                 // Программа приостанавливается, ожидая входящее соединение
-     
+                ListenTimer.Stop();
                 Socket handler = sListener.Accept();
                 string data = null;
-
+                ListenTimer.Start();
                 // Мы дождались клиента, пытающегося с нами соединиться
      
                 byte[] bytes = new byte[1024];
@@ -94,7 +94,7 @@ namespace ProjectServer
 
         private void ListenTimer_Tick(object sender, EventArgs e)
         {
-           Listener();
+      Listener();
         }
 
        

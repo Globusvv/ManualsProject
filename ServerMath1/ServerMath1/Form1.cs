@@ -9,15 +9,100 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
+using System.Net.Sockets;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using System.Net;
 
 namespace ServerMath1
 {
     public partial class Server : Form
     {
+
         public Server()
         {
+            Task.Factory.StartNew(Console);
             InitializeComponent();
+            
         }
+
+        private void Console()
+        {
+            
+            // Запускаем консоль.
+            if (AllocConsole())
+            {
+                FreeConsole();
+                    int port = 10000; // порт для приема входящих запросов
+                    // получаем адреса для запуска сокета
+                    IPEndPoint ipPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
+
+                    // создаем сокет
+                    Socket listenSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                    try
+                    {
+                        // связываем сокет с локальной точкой, по которой будем принимать данные
+                        listenSocket.Bind(ipPoint);
+                    //Recieve("hi");
+                        // начинаем прослушивание
+                        listenSocket.Listen(10);
+
+                    System.Console.WriteLine("Сервер запущен. Ожидание подключений...");
+
+                        while (true)
+                        {
+                            Socket handler = listenSocket.Accept();
+                            // получаем сообщение
+                            StringBuilder builder = new StringBuilder();
+                            int bytes = 0; // количество полученных байтов
+                            byte[] data = new byte[256]; // буфер для получаемых данных
+
+                            do
+                            {
+                                bytes = handler.Receive(data);
+                                builder.Append(Encoding.Unicode.GetString(data, 0, bytes));
+                            }
+                            while (handler.Available > 0);
+                        Recieve(builder.ToString());
+                        System.Console.WriteLine(DateTime.Now.ToShortTimeString() + ": " + builder.ToString());
+
+                        
+                            // отправляем ответ
+                            string message = "ваше сообщение доставлено";
+                            data = Encoding.Unicode.GetBytes(message);
+                            handler.Send(data);
+                            // закрываем сокет
+                            handler.Shutdown(SocketShutdown.Both);
+                            handler.Close();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                    System.Console.WriteLine(ex.Message);
+                    }
+
+            }
+        }
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool AllocConsole();
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool FreeConsole();
+
+
+
+
+
+        public void Recieve(string str)
+        {
+
+
+            MessageBox.Show(str);
+        }
+
 
         private void FLdButton_Click(object sender, EventArgs e)
         {
@@ -89,18 +174,11 @@ namespace ServerMath1
             if (Tests.SelectedIndex != -1)
             {
                 FLdName.Text = Tests.SelectedItem.ToString();
-                Process.Start(FLdName.Text);
+
+
+                //  Process.Start(FLdName.Text);
             }
         }
 
-        private void Add_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label3_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

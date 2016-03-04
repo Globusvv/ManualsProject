@@ -9,15 +9,78 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
+using System.Net.Sockets;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using System.Net;
 
 namespace UserMath
 {
     public partial class User : Form
     {
+        public byte[] data;
         public User()
         {
             InitializeComponent();
+            Lessons.Items.Add("SOmeString");
         }
+
+        private void Console()
+        {
+
+            // Запускаем консоль.
+           // if (AllocConsole())
+            {
+                FreeConsole();
+
+                // адрес и порт сервера, к которому будем подключаться
+                int port = 10000; // порт сервера
+                string address = "127.0.0.1"; // адрес сервера
+
+                try
+                {
+                    IPEndPoint ipPoint = new IPEndPoint(IPAddress.Parse(address), port);
+
+                    Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                    // подключаемся к удаленному хосту
+                    socket.Connect(ipPoint);
+                                       
+                    socket.Send(data);
+
+                    // получаем ответ
+                    data = new byte[256]; // буфер для ответа
+                    StringBuilder builder = new StringBuilder();
+                    int bytes = 0; // количество полученных байт
+
+                    do
+                    {
+                        bytes = socket.Receive(data, data.Length, 0);
+                        builder.Append(Encoding.Unicode.GetString(data, 0, bytes));
+                    }
+                    while (socket.Available > 0);
+                    System.Console.WriteLine("ответ сервера: " + builder.ToString());
+
+                    // закрываем сокет
+                    socket.Shutdown(SocketShutdown.Both);
+                    socket.Close();
+                }
+                catch (Exception ex)
+                {
+                    System.Console.WriteLine(ex.Message);
+                }
+               
+            }
+
+        }
+        
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool AllocConsole();
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool FreeConsole();
 
         private void Lessons_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -77,7 +140,10 @@ namespace UserMath
             if (Lessons.SelectedIndex != -1)
             {
                 FLdName.Text = Lessons.SelectedItem.ToString();
-                Process.Start(FLdName.Text);
+                //Process.Start(FLdName.Text);
+             
+                   data = Encoding.Unicode.GetBytes(FLdName.Text.ToString()); 
+                Task.Factory.StartNew(Console);
             }
 
         }

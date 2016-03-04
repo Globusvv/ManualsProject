@@ -41,6 +41,7 @@
             this.Add = new System.Windows.Forms.Button();
             this.OnlineUsers = new System.Windows.Forms.ListBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // Lessons
@@ -143,14 +144,13 @@
             this.Add.TabIndex = 10;
             this.Add.Text = "Add";
             this.Add.UseVisualStyleBackColor = true;
-            this.Add.Click += new System.EventHandler(this.Add_Click);
             // 
             // OnlineUsers
             // 
             this.OnlineUsers.FormattingEnabled = true;
             this.OnlineUsers.Location = new System.Drawing.Point(481, 32);
             this.OnlineUsers.Name = "OnlineUsers";
-            this.OnlineUsers.Size = new System.Drawing.Size(123, 433);
+            this.OnlineUsers.Size = new System.Drawing.Size(123, 264);
             this.OnlineUsers.TabIndex = 11;
             // 
             // label3
@@ -161,13 +161,21 @@
             this.label3.Size = new System.Drawing.Size(67, 13);
             this.label3.TabIndex = 12;
             this.label3.Text = "Online Users";
-            this.label3.Click += new System.EventHandler(this.label3_Click);
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(481, 317);
+            this.textBox1.Multiline = true;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(123, 148);
+            this.textBox1.TabIndex = 13;
             // 
             // Server
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(624, 499);
+            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.OnlineUsers);
             this.Controls.Add(this.Add);
@@ -203,6 +211,7 @@
         private System.Windows.Forms.Button Add;
         private System.Windows.Forms.ListBox OnlineUsers;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox textBox1;
     }
 }
 
